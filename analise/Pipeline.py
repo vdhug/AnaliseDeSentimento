@@ -5,7 +5,7 @@ iris = datasets.load_iris()
 X = iris.data #features
 y = iris.target #labels
 #Pensamos no classificador como uma função f(X) = y -> por isso temos que X são os atributos (features) e y são as classes (labels)
-from sklearn.cross_validation import train_test_split
+from sklearn.model_selection import train_test_split
 
 #here we are pationating our data set
 #We are taking the X's and Y's (remember that they are like an "array") and partionating in two sets

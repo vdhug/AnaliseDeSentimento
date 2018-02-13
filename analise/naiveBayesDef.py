@@ -1,7 +1,10 @@
 import nltk
 from nltk.corpus import movie_reviews
 from nltk.metrics import ConfusionMatrix
-import pickle
+from nltk.classify.scikitlearn import SklearnClassifier
+from sklearn.naive_bayes import MultinomialNB,BernoulliNB
+from sklearn.linear_model import LogisticRegression,SGDClassifier
+from sklearn.svm import SVC, LinearSVC, NuSVC
 
 
 
@@ -49,37 +52,180 @@ def encontra_atributos (revisao):
 
 conjunto_atributos = [(encontra_atributos(rev), categoria) for (rev, categoria) in baseBalanceada]
 
+#ALGORITMOS SENDO UTILIZADOS
 
+MNB_classifier = SklearnClassifier(MultinomialNB())
+BernoulliNB_classifier = SklearnClassifier(BernoulliNB())
+LogisticRegression_classifier = SklearnClassifier(LogisticRegression())
+SGDClassifier_classifier = SklearnClassifier(SGDClassifier())
+SVC_classifier = SklearnClassifier(SVC())
+LinearSVC_classifier = SklearnClassifier(LinearSVC())
+NuSVC_classifier = SklearnClassifier(NuSVC())
 
 todas = []
 j = 0
+#-----------------------------------------INÍCIO DA VALIDAÇÃO CRUZADA----------------------------------------------------------------------------------------------------------------
 while j < 10:
-    print("Iteração =", j);
+    print("Iteração =", j)
     teste = conjunto_atributos[0:200]
     treino = conjunto_atributos[200:]
 
 
-    classificador = nltk.NaiveBayesClassifier.train(treino)
 
+#--------------------------------------------------ALGORITMO NAIVE BAYES INÍCIO-----------------------------------------------------------------------------------------------
+    classificador = nltk.NaiveBayesClassifier.train(treino)
     print("Acurácia do Naive :", (nltk.classify.accuracy(classificador, teste)) * 100, "%")
 
 
     esperado = []
     previsto = []
 
-    for (frase, classe) in conjunto_atributos:
+    for (frase, classe) in teste:
         resultado = classificador.classify(frase)
         previsto.append(resultado)
         esperado.append(classe)
 
     matrizDeConfusao = ConfusionMatrix(esperado, previsto)
-    print("-------------------MATRIZ DE CONFUSAO-----------------------------")
+    print("-------------------MATRIZ DE CONFUSAO NAIVE BAYES-----------------------------")
+    print(matrizDeConfusao)
+#-------------------------------ALGORITMO NAIVE BAYES FINAL------------------------------------------------------------------------------------------------------------------------
+
+
+
+# --------------------------------------------------ALGORITMO MNB INÍCIO-----------------------------------------------------------------------------------------------
+    MNB_classifier.train(treino)
+    print("Acurácia MNB_classificador :", (nltk.classify.accuracy(MNB_classifier, teste)) * 100)
+
+
+    esperado = []
+    previsto = []
+
+    for (frase, classe) in teste:
+        resultado = MNB_classifier.classify(frase)
+        previsto.append(resultado)
+        esperado.append(classe)
+
+    matrizDeConfusao = ConfusionMatrix(esperado, previsto)
+    print("-------------------MATRIZ DE CONFUSAO MULTINOMINAL ALGORITHM-----------------------------")
     print(matrizDeConfusao)
 
+# -------------------------------ALGORITMO MULTINOMINAL ALGORITHM FINAL------------------------------------------------------------------------------------------------------------------------
+
+
+
+# --------------------------------------------------ALGORITMO BERNOULLI INÍCIO-----------------------------------------------------------------------------------------------
+    BernoulliNB_classifier.train(treino)
+    print("Acurácia BernoulliNB_classificador :", (nltk.classify.accuracy(BernoulliNB_classifier, teste)) * 100)
+    esperado = []
+    previsto = []
+
+    for (frase, classe) in teste:
+        resultado = BernoulliNB_classifier.classify(frase)
+        previsto.append(resultado)
+        esperado.append(classe)
+
+    matrizDeConfusao = ConfusionMatrix(esperado, previsto)
+    print("-------------------MATRIZ DE CONFUSAO BERNOULLI ALGORITHM-----------------------------")
+    print(matrizDeConfusao)
+# -------------------------------ALGORITMO BERNOULLI ALGORITHM FINAL------------------------------------------------------------------------------------------------------------------------
+
+
+
+# --------------------------------------------------ALGORITMO REGRESSÃO LOGISTICA INÍCIO-----------------------------------------------------------------------------------------------
+    LogisticRegression_classifier.train(treino)
+    print("Acurácia LogisticRegression_classificador :", (nltk.classify.accuracy(LogisticRegression_classifier, teste)) * 100)
+    esperado = []
+    previsto = []
+
+    for (frase, classe) in teste:
+        resultado = LogisticRegression_classifier.classify(frase)
+        previsto.append(resultado)
+        esperado.append(classe)
+
+    matrizDeConfusao = ConfusionMatrix(esperado, previsto)
+    print("-------------------MATRIZ DE CONFUSAO REGRESSÃO LOGISTICA-----------------------------")
+    print(matrizDeConfusao)
+# -------------------------------ALGORITMO REGRESSÃO LOGISTICA FINAL------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+# --------------------------------------------------ALGORITMO SGDC INÍCIO-----------------------------------------------------------------------------------------------
+    SGDClassifier_classifier.train(treino)
+    print("Acurácia SGDClassifier_classificador :", (nltk.classify.accuracy(SGDClassifier_classifier, teste)) * 100)
+    esperado = []
+    previsto = []
+
+    for (frase, classe) in teste:
+        resultado = SGDClassifier_classifier.classify(frase)
+        previsto.append(resultado)
+        esperado.append(classe)
+
+    matrizDeConfusao = ConfusionMatrix(esperado, previsto)
+    print("-------------------MATRIZ DE CONFUSAO REGRESSÃO LOGISTICA-----------------------------")
+    print(matrizDeConfusao)
+# -------------------------------ALGORITMO SGDC FINAL------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+# --------------------------------------------------ALGORITMO SVC INÍCIO-----------------------------------------------------------------------------------------------
+    SVC_classifier.train(treino)
+    print("Acurácia SVC_classificador :", (nltk.classify.accuracy(SVC_classifier, teste)) * 100)
+    esperado = []
+    previsto = []
+
+    for (frase, classe) in teste:
+        resultado = SVC_classifier.classify(frase)
+        previsto.append(resultado)
+        esperado.append(classe)
+
+    matrizDeConfusao = ConfusionMatrix(esperado, previsto)
+    print("-------------------MATRIZ DE CONFUSAO SVC-----------------------------")
+    print(matrizDeConfusao)
+# -------------------------------ALGORITMO SVC FINAL------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+# --------------------------------------------------ALGORITMO LINEAR SVC INÍCIO-----------------------------------------------------------------------------------------------
+    LinearSVC_classifier.train(treino)
+    print("Acurácia LinearSVC_classificador :", (nltk.classify.accuracy(LinearSVC_classifier, teste)) * 100)
+    esperado = []
+    previsto = []
+
+    for (frase, classe) in teste:
+        resultado = LinearSVC_classifier.classify(frase)
+        previsto.append(resultado)
+        esperado.append(classe)
+
+    matrizDeConfusao = ConfusionMatrix(esperado, previsto)
+    print("-------------------MATRIZ DE CONFUSAO LINEAR SVC-----------------------------")
+    print(matrizDeConfusao)
+# -------------------------------ALGORITMO LINEAR SVC FINAL---------------------------------------------------------------------------------------------------------------------------
+
+
+# --------------------------------------------------ALGORITMO LINEAR SVC INÍCIO-----------------------------------------------------------------------------------------------
+    NuSVC_classifier.train(treino)
+    print("Acurácia NuSVC_classificador :", (nltk.classify.accuracy(NuSVC_classifier, teste)) * 100)
+    esperado = []
+    previsto = []
+
+    for (frase, classe) in teste:
+        resultado = NuSVC_classifier.classify(frase)
+        previsto.append(resultado)
+        esperado.append(classe)
+
+    matrizDeConfusao = ConfusionMatrix(esperado, previsto)
+    print("-------------------MATRIZ DE CONFUSAO NuSVC -----------------------------")
+    print(matrizDeConfusao)
+# -------------------------------ALGORITMO LINEAR SVC FINAL---------------------------------------------------------------------------------------------------------------------------
 
     for rev in teste:
         conjunto_atributos.remove(rev)
 
     for rev in teste:
         conjunto_atributos.append(rev)
-    j = j+1;
+
+    j = j + 1
+#-----------------------------------------FINAL DA VALIDAÇÃO CRUZADA----------------------------------------------------------------------------------------------------------------
