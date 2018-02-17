@@ -1,9 +1,8 @@
 import nltk
 from nltk.corpus import product_reviews_1
 
+nokia_reviews = product_reviews_1.reviews('Nokia_6610.txt')
 
-camera_reviews = product_reviews_1.reviews('Canon_G3.txt')
+print(len(nokia_reviews))
 
-print(len(camera_reviews))
-
-print(camera_reviews[1])
+print(nokia_reviews[0])
