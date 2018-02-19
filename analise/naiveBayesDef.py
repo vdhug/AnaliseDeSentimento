@@ -12,6 +12,8 @@ revisoes = [(list (movie_reviews.words(fileid)), categoria)
             for categoria in movie_reviews.categories()
             for fileid in movie_reviews.fileids(categoria)]
 
+print(revisoes[1])
+
 revisoes_negativas = revisoes[0:1000]
 
 revisoes_positivas = revisoes[1000:2000]
