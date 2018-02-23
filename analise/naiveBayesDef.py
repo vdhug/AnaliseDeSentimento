@@ -53,7 +53,7 @@ def encontra_atributos (revisao):
 
 
 conjunto_atributos = [(encontra_atributos(rev), categoria) for (rev, categoria) in baseBalanceada]
-
+print(conjunto_atributos[0])
 #ALGORITMOS SENDO UTILIZADOS
 
 MNB_classifier = SklearnClassifier(MultinomialNB())

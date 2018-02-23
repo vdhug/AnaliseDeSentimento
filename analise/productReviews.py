@@ -67,7 +67,7 @@ for i in range(0, 1000):
     base_balanceada.append(reviews_pos[i])
     base_balanceada.append(reviews_neg[i])
 
-    
+
 print(len(reviews_neg))
 print(len(reviews_pos))
 print(len(base_balanceada))
