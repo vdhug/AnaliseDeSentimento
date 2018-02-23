@@ -25,15 +25,16 @@ for i in range(0, 1000):
     y.append(1)
     y.append(0)
 
-
+print(X[0])
 from sklearn.feature_extraction.text import TfidfVectorizer
-
+print(len(X))
 # This vectorizer breaks text into single words and bi-grams
 # and then calculates the TF-IDF representation
 vectorizer = TfidfVectorizer(ngram_range=(1, 2))
 
 vectors = vectorizer.fit_transform(X)
-
+print(vectors[0])
+print(vectors.shape)
 from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(vectors, y, test_size=0.33, random_state=42)
 
