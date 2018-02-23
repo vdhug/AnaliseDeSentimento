@@ -30,8 +30,6 @@ for i in range(0, 1000):
 vectorizer = TfidfVectorizer(ngram_range=(1, 2))
 
 vectors = vectorizer.fit_transform(X)
-print(vectors[0])
-print(vectors.shape)
 
 X_train, X_test, y_train, y_test = train_test_split(vectors, y, test_size=0.33, random_state=42)
 
