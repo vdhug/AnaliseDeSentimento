@@ -1,4 +1,3 @@
-from nltk.corpus import PlaintextCorpusReader
 import json
 from nltk.tokenize import sent_tokenize, word_tokenize
 
@@ -70,5 +69,6 @@ for i in range(0, 1000):
 
 print(len(reviews_neg))
 print(len(reviews_pos))
+
 print(len(base_balanceada))
 

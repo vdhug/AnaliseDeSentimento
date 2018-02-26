@@ -3,19 +3,51 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.svm import LinearSVC
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import MultinomialNB
-from nltk.metrics import ConfusionMatrix
 from sklearn.model_selection import cross_val_score
+import json
+from nltk.tokenize import sent_tokenize, word_tokenize
+
+
+data1 = json.load(open(r'C:\Users\Vitor\Documents\TCC\Base de dados\TripAdvisorJson\json\260444.json'))
+data2 = json.load(open(r'C:\Users\Vitor\Documents\TCC\Base de dados\TripAdvisorJson\json\774804.json'))
+data3 = json.load(open(r'C:\Users\Vitor\Documents\TCC\Base de dados\TripAdvisorJson\json\2515499.json'))
+
+reviews_pos = []
+reviews_neg = []
+
+for review in data1["Reviews"]:
+
+    if float((review["Ratings"]["Overall"])) <=2:
+        objeto = word_tokenize(str(review["Content"])), 'neg'
+        reviews_neg.append(objeto)
+
+    if float((review["Ratings"]["Overall"])) >=4:
+        objeto = word_tokenize(str(review["Content"])), 'pos'
+        reviews_pos.append(objeto)
+
+for review in data2["Reviews"]:
+
+    if float((review["Ratings"]["Overall"])) <=2:
+        objeto = word_tokenize(str(review["Content"])), 'neg'
+        reviews_neg.append(objeto)
+    if float((review["Ratings"]["Overall"])) >=4:
+        objeto = word_tokenize(str(review["Content"])), 'pos'
+        reviews_pos.append(objeto)
+
+for review in data3["Reviews"]:
+
+    if float((review["Ratings"]["Overall"])) <=2:
+        objeto = word_tokenize(str(review["Content"])), 'neg'
+        reviews_neg.append(objeto)
+    if float((review["Ratings"]["Overall"])) >=4:
+        objeto = word_tokenize(str(review["Content"])), 'pos'
+        reviews_pos.append(objeto)
 
 
 
+revisoes_negativas = reviews_neg[0:1000]
 
-revisoes = [(list (movie_reviews.words(fileid)), categoria)
-            for categoria in movie_reviews.categories()
-            for fileid in movie_reviews.fileids(categoria)]
-
-revisoes_negativas = revisoes[0:1000]
-
-revisoes_positivas = revisoes[1000:2000]
+revisoes_positivas = reviews_pos[0:1000]
 
 
 X = []
