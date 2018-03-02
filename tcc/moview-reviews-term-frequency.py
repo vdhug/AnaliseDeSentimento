@@ -59,9 +59,26 @@ def term_frequency(revisao):
 conjunto_atributos = [(term_frequency(rev), categoria) for (rev, categoria) in baseBalanceada]
 
 
-LinearSVC_classifier = SklearnClassifier(LinearSVC())
 MNB_classifier = SklearnClassifier(MultinomialNB())
 LogisticRegression_classifier = SklearnClassifier(LogisticRegression())
+LinearSVC_classifier = SklearnClassifier(LinearSVC())
+
+from sklearn.metrics import recall_score, precision_score, f1_score
+
+
+
+revocacaoNB = 0
+revocacaoRL = 0
+revocacaoSVM = 0
+
+precisaoNB = 0
+precisaoRL = 0
+precisaoSVM = 0
+
+
+f1NB = 0
+f1RL = 0
+f1SVM = 0
 
 for i in range(0, 10):
     print("Iteração =", i)
@@ -70,55 +87,66 @@ for i in range(0, 10):
 
     # --------------------------------------------------ALGORITMO MNB INÍCIO-----------------------------------------------------------------------------------------------
     MNB_classifier.train(treino)
-    print("Acurácia MNB_classificador :", (nltk.classify.accuracy(MNB_classifier, teste)) * 100)
 
-    esperado = []
-    previsto = []
-
+    y_pred = []
+    y_true = []
     for (frase, classe) in teste:
-        resultado = MNB_classifier.classify(frase)
-        previsto.append(resultado)
-        esperado.append(classe)
+        r = MNB_classifier.classify(frase)
+        y_pred.append(r)
+        y_true.append(classe)
 
-    matrizDeConfusao = ConfusionMatrix(esperado, previsto)
-    print("-------------------MATRIZ DE CONFUSAO MULTINOMINAL ALGORITHM-----------------------------")
-    print(matrizDeConfusao)
+
+    #neg, pos
+    revocacaoNB = revocacaoNB + float(recall_score(y_true, y_pred, average=None)[1])
+    precisaoNB = precisaoNB + float(precision_score(y_true, y_pred, average=None)[1])
+    f1NB = f1NB + float(f1_score(y_true, y_pred, average=None)[1])
+
 
     # -------------------------------ALGORITMO MULTINOMINAL ALGORITHM FINAL------------------------------------------------------------------------------------------------------------------------
 
 
-# --------------------------------------------------ALGORITMO REGRESSÃO LOGISTICA INÍCIO-----------------------------------------------------------------------------------------------
+    # --------------------------------------------------ALGORITMO LogisticRegression_classifier INÍCIO-----------------------------------------------------------------------------------------------
     LogisticRegression_classifier.train(treino)
-    print("Acurácia LogisticRegression_classificador :", (nltk.classify.accuracy(LogisticRegression_classifier, teste)) * 100)
-    esperado = []
-    previsto = []
 
+    y_pred = []
+    y_true = []
     for (frase, classe) in teste:
-        resultado = LogisticRegression_classifier.classify(frase)
-        previsto.append(resultado)
-        esperado.append(classe)
+        r = LogisticRegression_classifier.classify(frase)
+        y_pred.append(r)
+        y_true.append(classe)
 
-    matrizDeConfusao = ConfusionMatrix(esperado, previsto)
-    print("-------------------MATRIZ DE CONFUSAO REGRESSÃO LOGISTICA-----------------------------")
-    print(matrizDeConfusao)
-# -------------------------------ALGORITMO REGRESSÃO LOGISTICA FINAL------------------------------------------------------------------------------------------------------------------------
+    # neg, pos
+    revocacaoRL = revocacaoRL + float(recall_score(y_true, y_pred, average=None)[1])
+    precisaoRL = precisaoRL + float(precision_score(y_true, y_pred, average=None)[1])
+    f1RL = f1RL + float(f1_score(y_true, y_pred, average=None)[1])
+
+    # -------------------------------ALGORITMO MULTINOMINAL ALGORITHM FINAL------------------------------------------------------------------------------------------------------------------------
 
 
-# --------------------------------------------------ALGORITMO LINEAR SVC INÍCIO-----------------------------------------------------------------------------------------------
+
+
+
+    # --------------------------------------------------ALGORITMO MNB INÍCIO-----------------------------------------------------------------------------------------------
     LinearSVC_classifier.train(treino)
-    print("Acurácia LinearSVC_classificador :", (nltk.classify.accuracy(LinearSVC_classifier, teste)) * 100)
-    esperado = []
-    previsto = []
 
+    y_pred = []
+    y_true = []
     for (frase, classe) in teste:
-        resultado = LinearSVC_classifier.classify(frase)
-        previsto.append(resultado)
-        esperado.append(classe)
+        r = LinearSVC_classifier.classify(frase)
+        y_pred.append(r)
+        y_true.append(classe)
 
-    matrizDeConfusao = ConfusionMatrix(esperado, previsto)
-    print("-------------------MATRIZ DE CONFUSAO LINEAR SVC-----------------------------")
-    print(matrizDeConfusao)
-# -------------------------------ALGORITMO LINEAR SVC FINAL---------------------------------------------------------------------------------------------------------------------------
+    # neg, pos
+    revocacaoSVM = revocacaoSVM + float(recall_score(y_true, y_pred, average=None)[1])
+    precisaoSVM = precisaoSVM + float(precision_score(y_true, y_pred, average=None)[1])
+    f1SVM = f1SVM + float(f1_score(y_true, y_pred, average=None)[1])
+
+    # -------------------------------ALGORITMO MULTINOMINAL ALGORITHM FINAL------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
     for rev in teste:
         conjunto_atributos.remove(rev)
 
@@ -128,3 +156,19 @@ for i in range(0, 10):
 
 # -----------------------------------------FINAL DA VALIDAÇÃO CRUZADA----------------------------------------------------------------------------------------------------------------
 
+print("Revocações")
+print("NB",revocacaoNB/10)
+print("RL",revocacaoRL/10)
+print("SVM",revocacaoSVM/10)
+
+
+
+print("Precisoes")
+print("NB", precisaoNB/10)
+print("RL", precisaoRL/10)
+print("SVM", precisaoSVM/10)
+
+print("F1")
+print("NB",f1NB/10)
+print("RL",f1RL/10)
+print("SVM",f1SVM/10)

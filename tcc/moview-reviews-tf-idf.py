@@ -50,10 +50,19 @@ vectors = vectorizer.fit_transform(X)
 # 'recall_micro', 'recall_samples', 'recall_weighted', 'roc_auc', 'v_measure_score']
 metrics = ["f1", "precision", "recall"]
 
-for i in range(0, 3):
-    for metric in metrics:
-        scores = cross_val_score(LinearSVC_classifier, vectors, y, cv=10, scoring=metric)
-        print(metric)
-        print(scores)
+algoritmos = [LinearSVC_classifier, MNB_classifier, LogisticRegression_classifier]
+nomes = ["SVM", "NB", "Regressao Logistica"]
 
+for i in range(0,3):
+    print("------------------------------------------", nomes[i], "----------------------------------------------")
+    for metric in metrics:
+        scores = cross_val_score(algoritmos[i], vectors, y, cv=10, scoring=metric)
+        print(metric)
+        media = 0
+        for num in scores:
+            media += float(num)
+
+        print("Média =", media/10)
+
+    print("------------------------------------------")
 
