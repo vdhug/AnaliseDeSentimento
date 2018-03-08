@@ -28,41 +28,176 @@ for i in range(0, 1000):
     y.append(1)
     y.append(0)
 
-# This vectorizer breaks text into single words and bi-grams
-# and then calculates the TF-IDF representation
-vectorizer = TfidfVectorizer(ngram_range=(1, 2))
+from sklearn.feature_extraction.text import TfidfVectorizer
+vectorizer = TfidfVectorizer(ngram_range=(1,1))
 
-vectors = vectorizer.fit_transform(X)
 
 LinearSVC_classifier = LinearSVC()
 MNB_classifier = MultinomialNB()
 LogisticRegression_classifier = LogisticRegression()
 
-vectors = vectorizer.fit_transform(X)
+from sklearn.metrics import recall_score, precision_score, f1_score
 
-#f1, precision, recall
 
-#métricas disponíveis ['accuracy', 'adjusted_mutual_info_score', 'adjusted_rand_score', 'average_precision',
-# 'completeness_score', 'explained_variance', 'f1', 'f1_macro', 'f1_micro', 'f1_samples', 'f1_weighted',
-# 'fowlkes_mallows_score', 'homogeneity_score', 'mutual_info_score', 'neg_log_loss', 'neg_mean_absolute_error',
-# 'neg_mean_squared_error', 'neg_mean_squared_log_error', 'neg_median_absolute_error', 'normalized_mutual_info_score',
-# 'precision', 'precision_macro', 'precision_micro', 'precision_samples', 'precision_weighted', 'r2', 'recall', 'recall_macro',
-# 'recall_micro', 'recall_samples', 'recall_weighted', 'roc_auc', 'v_measure_score']
-metrics = ["f1", "precision", "recall"]
+revocacaoSVM = []
+precisaoSVM = []
+f1SVM = []
 
-algoritmos = [LinearSVC_classifier, MNB_classifier, LogisticRegression_classifier]
-nomes = ["SVM", "NB", "Regressao Logistica"]
+revocacaoNB = []
+precisaoNB = []
+f1NB = []
 
-for i in range(0,3):
-    print("------------------------------------------", nomes[i], "----------------------------------------------")
-    for metric in metrics:
-        scores = cross_val_score(algoritmos[i], vectors, y, cv=10, scoring=metric)
-        print(metric)
-        media = 0
-        for num in scores:
-            media += float(num)
+revocacaoRL = []
+precisaoRL = []
+f1RL = []
 
-        print("Média =", media/10)
+for i in range(0, 10):
+    vectors = vectorizer.fit_transform(X)
+    from sklearn.model_selection import train_test_split
 
-    print("------------------------------------------")
+    X_train, X_test, y_train, y_test = train_test_split(vectors, y, test_size=0.1, random_state=None, shuffle=False)
 
+    LinearSVC_classifier.fit(X_train, y_train)
+    y_pred = LinearSVC_classifier.predict(X_test)
+
+    revocacaoSVM.append(recall_score(y_test, y_pred, average=None))
+    precisaoSVM.append(precision_score(y_test, y_pred, average=None))
+    f1SVM.append(f1_score(y_test, y_pred, average=None))
+
+    MNB_classifier.fit(X_train, y_train)
+
+    y_pred = MNB_classifier.predict(X_test)
+
+    revocacaoNB.append(recall_score(y_test, y_pred, average=None))
+    precisaoNB.append(precision_score(y_test, y_pred, average=None))
+    f1NB.append(f1_score(y_test, y_pred, average=None))
+
+    LogisticRegression_classifier.fit(X_train, y_train)
+    y_pred = LogisticRegression_classifier.predict(X_test)
+
+    revocacaoRL.append(recall_score(y_test, y_pred, average=None))
+    precisaoRL.append(precision_score(y_test, y_pred, average=None))
+    f1RL.append(f1_score(y_test, y_pred, average=None))
+
+    for i in range(0, 200):
+        obj = X[i]
+        X.remove(obj)
+        X.append(obj)
+
+        aux = y[i]
+        y.remove(aux)
+        y.append(aux)
+
+
+
+
+
+# -----------------------------------------FINAL DA VALIDAÇÃO CRUZADA----------------------------------------------------------------------------------------------------------------
+
+
+
+
+print("F1 NB\n", f1NB)
+print("F1 RL\n", f1RL)
+print("F1 SVM\n", f1SVM)
+
+print("REVOCACAO NB\n", revocacaoNB)
+print("REVOCACAO RL\n", revocacaoRL)
+print("REVOCACAO SVM\n", revocacaoSVM)
+
+print("PRECISAO NB\n", precisaoNB)
+print("PRECISAO RL\n", precisaoRL)
+print("PRECISAO SVM\n", precisaoSVM)
+
+
+print("----------------MEDIAS  --------------------------------------")
+
+print("F1 NB")
+pos = 0
+neg = 0
+
+for i in f1NB:
+    neg += float(i[0])
+    pos += float(i[1])
+print("POS = ", pos/10, "NEG=", neg/10)
+
+print("F1 SVM")
+pos = 0
+neg = 0
+
+for i in f1SVM:
+    neg += float(i[0])
+    pos += float(i[1])
+print("POS = ", pos/10, "NEG=", neg/10)
+
+print("F1 RL")
+pos = 0
+neg = 0
+
+for i in f1RL:
+    neg += float(i[0])
+    pos += float(i[1])
+print("POS = ", pos/10, "NEG=", neg/10)
+
+
+
+
+print("revocacao NB")
+pos = 0
+neg = 0
+
+for i in revocacaoNB:
+    neg += float(i[0])
+    pos += float(i[1])
+print("POS = ", pos/10, "NEG=", neg/10)
+
+print("revocacao SVM")
+pos = 0
+neg = 0
+
+for i in revocacaoSVM:
+    neg += float(i[0])
+    pos += float(i[1])
+print("POS = ", pos/10, "NEG=", neg/10)
+
+print("revocacao RL")
+pos = 0
+neg = 0
+
+for i in revocacaoRL:
+    neg += float(i[0])
+    pos += float(i[1])
+print("POS = ", pos/10, "NEG=", neg/10)
+
+
+
+
+
+
+
+print("precisao NB")
+pos = 0
+neg = 0
+
+for i in precisaoNB:
+    neg += float(i[0])
+    pos += float(i[1])
+print("POS = ", pos/10, "NEG=", neg/10)
+
+print("precisao SVM")
+pos = 0
+neg = 0
+
+for i in precisaoSVM:
+    neg += float(i[0])
+    pos += float(i[1])
+print("POS = ", pos/10, "NEG=", neg/10)
+
+print("precisao RL")
+pos = 0
+neg = 0
+
+for i in precisaoRL:
+    neg += float(i[0])
+    pos += float(i[1])
+print("POS = ", pos/10, "NEG=", neg/10)

@@ -64,6 +64,21 @@ for review in data3["Reviews"]:
 
 base_balanceada = []
 
+
+mediaRevisoesPositivas = len(reviews_pos[0][0])
+mediaRevisoesNegativas = len(reviews_neg[0][0])
+
+for i in range(1, 1000):
+    mediaRevisoesPositivas = (mediaRevisoesPositivas  + len(reviews_pos[i][0]))/2
+    mediaRevisoesNegativas = (mediaRevisoesPositivas + len(reviews_neg[i][0]))/2
+
+
+
+print("Média do tamanho das revisões positivas =", mediaRevisoesPositivas)
+print("Média do tamanho das revisões negativas =", mediaRevisoesNegativas)
+print("Diferença entre as médias é =", mediaRevisoesPositivas-mediaRevisoesNegativas)
+
+
 for i in range(0, 1000):
     base_balanceada.append(reviews_pos[i])
     base_balanceada.append(reviews_neg[i])
