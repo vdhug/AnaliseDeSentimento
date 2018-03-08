@@ -50,7 +50,7 @@ def term_frequency(revisao):
     atributo = {}
     for p in palavra_atributo:
         if p in revisao:
-            atributo[p] = counts[p]
+            atributo[p] = counts[p]/len(revisao)
         else:
             atributo[p] = 0
     return atributo

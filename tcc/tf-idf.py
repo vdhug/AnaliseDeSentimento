@@ -1,13 +1,17 @@
-docA = "O gato mordeu minha mão"
-docB = "O cachorro mordeu meu pé"
+docA = "The movie is really really good"
+docB = "Horrible movie"
+docC = "Waste of time"
 
 bowA = docA.split(" ")
 bowB = docB.split(" ")
+bowC = docC.split(" ")
 
-wordSet= set(bowA).union(set(bowB))
+wordSet= set(bowA).union(set(bowB).union(set(bowC)))
 
+print(len(wordSet))
 wordDictA = dict.fromkeys(wordSet, 0)
 wordDictB = dict.fromkeys(wordSet, 0)
+wordDictC = dict.fromkeys(wordSet, 0)
 
 for word in bowA:
     wordDictA[word]+=1
@@ -15,8 +19,9 @@ for word in bowA:
 for word in bowB:
     wordDictB[word]+=1
 
-import pandas as pd
-#print(pd.DataFrame([wordDictA, wordDictB]))
+for word in bowC:
+    wordDictC[word]+=1
+
 
 def computeTF(wordDict, bow):
     tfDict = {}
@@ -27,10 +32,12 @@ def computeTF(wordDict, bow):
 
 tfBowA = computeTF(wordDictA, bowA)
 tfBowB = computeTF(wordDictB, bowB)
+tfBowC = computeTF(wordDictC, bowC)
 
+print(tfBowA)
 
+import math
 def computeIDF(docList):
-    import math
     idfDict = {}
     N = len(docList)
 
@@ -41,14 +48,18 @@ def computeIDF(docList):
             if val > 0:
                 idfDict[word] += 1
 
-    # divide N by denominator above, take the log of that
+    #divide N by denominator above, take the log of that
     for word, val in idfDict.items():
-        idfDict[word] = math.log(N / float(val))
+        div = N / val
+        idfDict[word] = math.log(div)
 
     return idfDict
 
 
-idfs = computeIDF([wordDictA, wordDictB])
+idfs = computeIDF([wordDictA, wordDictB, wordDictC])
+
+print(idfs)
+
 def computeTFIDF(tfBow, idfs):
     tfidf = {}
     for word, val in tfBow.items():
@@ -56,10 +67,13 @@ def computeTFIDF(tfBow, idfs):
     return tfidf
 
 
+
+
 tfidfBowA =  computeTFIDF(tfBowA, idfs)
 tfidfBowB = computeTFIDF(tfBowB, idfs)
+tfidfBowC = computeTFIDF(tfBowC, idfs)
 
 
 #Lastly I'll stick those into a matrix.
 import pandas as pd
-print(pd.DataFrame([tfidfBowA, tfidfBowB]))
+print(pd.DataFrame([tfidfBowA, tfidfBowB, tfidfBowC]))

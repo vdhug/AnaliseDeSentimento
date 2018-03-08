@@ -4,8 +4,9 @@ from sklearn.decomposition import TruncatedSVD
 from nltk.corpus import stopwords
 
 
-docA = "O gato dorme na cama"
-docB = "O cachorro dorme na varanda"
+docA = "The The cat"
+docB = "The The dog"
+
 
 corpus = []
 corpus.append(docA)
@@ -14,15 +15,14 @@ corpus.append(docB)
 
 stopset = set(stopwords.words('english'))
 
-vectorizer = TfidfVectorizer(use_idf=True, ngram_range=(1,1))
+vectorizer = TfidfVectorizer()
 X = vectorizer.fit_transform(corpus)
-print(X[0])
+print(X)
 X.shape
+
+
 lsa = TruncatedSVD(n_components=2, n_iter=2)
 lsa.fit(X)
 terms = vectorizer.get_feature_names()
 
-print(terms[0])
-print(X[1])
-print(terms[1])
 

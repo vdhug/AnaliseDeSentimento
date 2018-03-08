@@ -95,7 +95,7 @@ def term_frequency(revisao):
     atributo = {}
     for p in palavra_atributo:
         if p in revisao:
-            atributo[p] = counts[p]
+            atributo[p] = counts[p]/len(revisao)
         else:
             atributo[p] = 0
     return atributo
@@ -108,62 +108,64 @@ LinearSVC_classifier = SklearnClassifier(LinearSVC())
 MNB_classifier = SklearnClassifier(MultinomialNB())
 LogisticRegression_classifier = SklearnClassifier(LogisticRegression())
 
+
+from sklearn.metrics import recall_score, precision_score, f1_score
+
+
+revocacaoSVM = []
+precisaoSVM = []
+f1SVM = []
+
+revocacaoNB = []
+precisaoNB = []
+f1NB = []
+
+revocacaoRL = []
+precisaoRL = []
+f1RL = []
+
 for i in range(0, 10):
-    print("Iteração =", i)
     teste = conjunto_atributos[0:200]
     treino = conjunto_atributos[200:]
 
-    # --------------------------------------------------ALGORITMO MNB INÍCIO-----------------------------------------------------------------------------------------------
-    MNB_classifier.train(treino)
-    print("Acurácia MNB_classificador :", (nltk.classify.accuracy(MNB_classifier, teste)) * 100)
-
-    esperado = []
-    previsto = []
-
-    for (frase, classe) in teste:
-        resultado = MNB_classifier.classify(frase)
-        previsto.append(resultado)
-        esperado.append(classe)
-
-    matrizDeConfusao = ConfusionMatrix(esperado, previsto)
-    print("-------------------MATRIZ DE CONFUSAO MULTINOMINAL ALGORITHM-----------------------------")
-    print(matrizDeConfusao)
-
-    # -------------------------------ALGORITMO MULTINOMINAL ALGORITHM FINAL------------------------------------------------------------------------------------------------------------------------
-
-
-# --------------------------------------------------ALGORITMO REGRESSÃO LOGISTICA INÍCIO-----------------------------------------------------------------------------------------------
-    LogisticRegression_classifier.train(treino)
-    print("Acurácia LogisticRegression_classificador :", (nltk.classify.accuracy(LogisticRegression_classifier, teste)) * 100)
-    esperado = []
-    previsto = []
-
-    for (frase, classe) in teste:
-        resultado = LogisticRegression_classifier.classify(frase)
-        previsto.append(resultado)
-        esperado.append(classe)
-
-    matrizDeConfusao = ConfusionMatrix(esperado, previsto)
-    print("-------------------MATRIZ DE CONFUSAO REGRESSÃO LOGISTICA-----------------------------")
-    print(matrizDeConfusao)
-# -------------------------------ALGORITMO REGRESSÃO LOGISTICA FINAL------------------------------------------------------------------------------------------------------------------------
-
-
-# --------------------------------------------------ALGORITMO LINEAR SVC INÍCIO-----------------------------------------------------------------------------------------------
     LinearSVC_classifier.train(treino)
-    print("Acurácia LinearSVC_classificador :", (nltk.classify.accuracy(LinearSVC_classifier, teste)) * 100)
-    esperado = []
-    previsto = []
-
+    y_pred = []
+    y_true = []
     for (frase, classe) in teste:
-        resultado = LinearSVC_classifier.classify(frase)
-        previsto.append(resultado)
-        esperado.append(classe)
+        r = LinearSVC_classifier.classify(frase)
+        y_pred.append(r)
+        y_true.append(classe)
 
-    matrizDeConfusao = ConfusionMatrix(esperado, previsto)
-    print("-------------------MATRIZ DE CONFUSAO LINEAR SVC-----------------------------")
-    print(matrizDeConfusao)
-# -------------------------------ALGORITMO LINEAR SVC FINAL---------------------------------------------------------------------------------------------------------------------------
+    revocacaoSVM.append(recall_score(y_true, y_pred, average=None))
+    precisaoSVM.append(precision_score(y_true, y_pred, average=None))
+    f1SVM.append(f1_score(y_true, y_pred, average=None))
+
+    MNB_classifier.train(treino)
+
+    y_pred = []
+    y_true = []
+    for (frase, classe) in teste:
+        r = MNB_classifier.classify(frase)
+        y_pred.append(r)
+        y_true.append(classe)
+
+    revocacaoNB.append(recall_score(y_true, y_pred, average=None))
+    precisaoNB.append(precision_score(y_true, y_pred, average=None))
+    f1NB.append(f1_score(y_true, y_pred, average=None))
+
+    LogisticRegression_classifier.train(treino)
+    y_pred = []
+    y_true = []
+    for (frase, classe) in teste:
+        r = LogisticRegression_classifier.classify(frase)
+        y_pred.append(r)
+        y_true.append(classe)
+
+    revocacaoRL.append(recall_score(y_true, y_pred, average=None))
+    precisaoRL.append(precision_score(y_true, y_pred, average=None))
+    f1RL.append(f1_score(y_true, y_pred, average=None))
+
+
     for rev in teste:
         conjunto_atributos.remove(rev)
 
@@ -173,3 +175,110 @@ for i in range(0, 10):
 
 # -----------------------------------------FINAL DA VALIDAÇÃO CRUZADA----------------------------------------------------------------------------------------------------------------
 
+
+
+
+print("F1 NB\n", f1NB)
+print("F1 RL\n", f1RL)
+print("F1 SVM\n", f1SVM)
+
+print("REVOCACAO NB\n", revocacaoNB)
+print("REVOCACAO RL\n", revocacaoRL)
+print("REVOCACAO SVM\n", revocacaoSVM)
+
+print("PRECISAO NB\n", precisaoNB)
+print("PRECISAO RL\n", precisaoRL)
+print("PRECISAO SVM\n", precisaoSVM)
+
+
+print("----------------MEDIAS  --------------------------------------")
+
+print("F1 NB")
+pos = 0
+neg = 0
+
+for i in f1NB:
+    neg += float(i[0])
+    pos += float(i[1])
+print("POS = ", pos/10, "NEG=", neg/10)
+
+print("F1 SVM")
+pos = 0
+neg = 0
+
+for i in f1SVM:
+    neg += float(i[0])
+    pos += float(i[1])
+print("POS = ", pos/10, "NEG=", neg/10)
+
+print("F1 RL")
+pos = 0
+neg = 0
+
+for i in f1RL:
+    neg += float(i[0])
+    pos += float(i[1])
+print("POS = ", pos/10, "NEG=", neg/10)
+
+
+
+
+print("revocacao NB")
+pos = 0
+neg = 0
+
+for i in revocacaoNB:
+    neg += float(i[0])
+    pos += float(i[1])
+print("POS = ", pos/10, "NEG=", neg/10)
+
+print("revocacao SVM")
+pos = 0
+neg = 0
+
+for i in revocacaoSVM:
+    neg += float(i[0])
+    pos += float(i[1])
+print("POS = ", pos/10, "NEG=", neg/10)
+
+print("revocacao RL")
+pos = 0
+neg = 0
+
+for i in revocacaoRL:
+    neg += float(i[0])
+    pos += float(i[1])
+print("POS = ", pos/10, "NEG=", neg/10)
+
+
+
+
+
+
+
+print("precisao NB")
+pos = 0
+neg = 0
+
+for i in precisaoNB:
+    neg += float(i[0])
+    pos += float(i[1])
+print("POS = ", pos/10, "NEG=", neg/10)
+
+print("precisao SVM")
+pos = 0
+neg = 0
+
+for i in precisaoSVM:
+    neg += float(i[0])
+    pos += float(i[1])
+print("POS = ", pos/10, "NEG=", neg/10)
+
+print("precisao RL")
+pos = 0
+neg = 0
+
+for i in precisaoRL:
+    neg += float(i[0])
+    pos += float(i[1])
+print("POS = ", pos/10, "NEG=", neg/10)
