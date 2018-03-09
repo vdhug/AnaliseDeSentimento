@@ -47,3 +47,41 @@ print(y_test[0:10])
 
 
 print(accuracy_score(y_test, predicoes))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

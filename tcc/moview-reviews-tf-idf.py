@@ -51,8 +51,15 @@ revocacaoRL = []
 precisaoRL = []
 f1RL = []
 
+aux = []
+
+for classe in y:
+    aux.append(classe)
+
+
 for i in range(0, 10):
     vectors = vectorizer.fit_transform(X)
+
     from sklearn.model_selection import train_test_split
 
     X_train, X_test, y_train, y_test = train_test_split(vectors, y, test_size=0.1, random_state=None, shuffle=False)
@@ -80,16 +87,17 @@ for i in range(0, 10):
     f1RL.append(f1_score(y_test, y_pred, average=None))
 
     for i in range(0, 200):
-        obj = X[i]
+        obj = X[0]
         X.remove(obj)
         X.append(obj)
 
-        aux = y[i]
-        y.remove(aux)
-        y.append(aux)
+        obj = aux[0]
+        aux.remove(obj)
+        aux.append(obj)
 
-
-
+    y = []
+    for classe in aux:
+        y.append(classe)
 
 
 # -----------------------------------------FINAL DA VALIDAÇÃO CRUZADA----------------------------------------------------------------------------------------------------------------
