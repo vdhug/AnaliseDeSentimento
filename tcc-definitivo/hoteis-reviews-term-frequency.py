@@ -3,19 +3,53 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.svm import LinearSVC
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import MultinomialNB
-from nltk.metrics import ConfusionMatrix
+from nltk.classify.scikitlearn import SklearnClassifier
 from sklearn.model_selection import cross_val_score
+import json
+from nltk.tokenize import sent_tokenize, word_tokenize
 
 
+data1 = json.load(open(r'C:\Users\Vitor\Documents\TCC\Base de dados\TripAdvisorJson\json\260444.json'))
+data2 = json.load(open(r'C:\Users\Vitor\Documents\TCC\Base de dados\TripAdvisorJson\json\774804.json'))
+data3 = json.load(open(r'C:\Users\Vitor\Documents\TCC\Base de dados\TripAdvisorJson\json\2515499.json'))
+
+reviews_pos = []
+reviews_neg = []
+
+for review in data1["Reviews"]:
+
+    if float((review["Ratings"]["Overall"])) <=2:
+        objeto = word_tokenize(str(review["Content"])), 'neg'
+        reviews_neg.append(objeto)
+
+    if float((review["Ratings"]["Overall"])) >=4:
+        objeto = word_tokenize(str(review["Content"])), 'pos'
+        reviews_pos.append(objeto)
+
+for review in data2["Reviews"]:
+
+    if float((review["Ratings"]["Overall"])) <=2:
+        objeto = word_tokenize(str(review["Content"])), 'neg'
+        reviews_neg.append(objeto)
+    if float((review["Ratings"]["Overall"])) >=4:
+        objeto = word_tokenize(str(review["Content"])), 'pos'
+        reviews_pos.append(objeto)
+
+for review in data3["Reviews"]:
+
+    if float((review["Ratings"]["Overall"])) <=2:
+        objeto = word_tokenize(str(review["Content"])), 'neg'
+        reviews_neg.append(objeto)
+    if float((review["Ratings"]["Overall"])) >=4:
+        objeto = word_tokenize(str(review["Content"])), 'pos'
+        reviews_pos.append(objeto)
 
 
-revisoes = [(list (movie_reviews.words(fileid)), categoria)
-            for categoria in movie_reviews.categories()
-            for fileid in movie_reviews.fileids(categoria)]
+#8079
+#1059
+revisoes_negativas = reviews_neg[0:1000]
 
-revisoes_negativas = revisoes[0:1000]
-
-revisoes_positivas = revisoes[1000:2000]
+revisoes_positivas = reviews_pos[0:1000]
 
 
 X = []
@@ -28,8 +62,9 @@ for i in range(0, 1000):
     y.append(1)
     y.append(0)
 
-from sklearn.feature_extraction.text import TfidfVectorizer
-vectorizer = TfidfVectorizer(ngram_range=(1,1))
+
+from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
+vectorizer = CountVectorizer(stop_words="english", analyzer="word", binary=False)
 
 
 LinearSVC_classifier = LinearSVC()
@@ -51,13 +86,14 @@ revocacaoRL = []
 precisaoRL = []
 f1RL = []
 
+
 aux = []
 
 for classe in y:
     aux.append(classe)
 
-
 for i in range(0, 10):
+
     vectors = vectorizer.fit_transform(X)
 
     from sklearn.model_selection import train_test_split
@@ -99,23 +135,22 @@ for i in range(0, 10):
     for classe in aux:
         y.append(classe)
 
-
 # -----------------------------------------FINAL DA VALIDAÇÃO CRUZADA----------------------------------------------------------------------------------------------------------------
 
 
 
 
 print("F1 NB\n", f1NB)
-print("F1 RL\n", f1RL)
 print("F1 SVM\n", f1SVM)
+print("F1 RL\n", f1RL)
 
 print("REVOCACAO NB\n", revocacaoNB)
-print("REVOCACAO RL\n", revocacaoRL)
 print("REVOCACAO SVM\n", revocacaoSVM)
+print("REVOCACAO RL\n", revocacaoRL)
 
 print("PRECISAO NB\n", precisaoNB)
-print("PRECISAO RL\n", precisaoRL)
 print("PRECISAO SVM\n", precisaoSVM)
+print("PRECISAO RL\n", precisaoRL)
 
 
 print("----------------MEDIAS  --------------------------------------")

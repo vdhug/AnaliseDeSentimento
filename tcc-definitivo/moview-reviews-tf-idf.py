@@ -28,9 +28,8 @@ for i in range(0, 1000):
     y.append(1)
     y.append(0)
 
-from sklearn.feature_extraction.text import TfidfVectorizer
-vectorizer = TfidfVectorizer(ngram_range=(1,1))
-
+from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
+vectorizer = CountVectorizer(stop_words="english", analyzer="word", binary=False)
 
 LinearSVC_classifier = LinearSVC()
 MNB_classifier = MultinomialNB()
@@ -58,7 +57,10 @@ for classe in y:
 
 
 for i in range(0, 10):
-    vectors = vectorizer.fit_transform(X)
+    vectors_aux = vectorizer.fit_transform(X)
+    tfidf = TfidfTransformer()
+
+    vectors = tfidf.fit_transform(vectors_aux)
 
     from sklearn.model_selection import train_test_split
 
@@ -106,16 +108,16 @@ for i in range(0, 10):
 
 
 print("F1 NB\n", f1NB)
-print("F1 RL\n", f1RL)
 print("F1 SVM\n", f1SVM)
+print("F1 RL\n", f1RL)
 
 print("REVOCACAO NB\n", revocacaoNB)
-print("REVOCACAO RL\n", revocacaoRL)
 print("REVOCACAO SVM\n", revocacaoSVM)
+print("REVOCACAO RL\n", revocacaoRL)
 
 print("PRECISAO NB\n", precisaoNB)
-print("PRECISAO RL\n", precisaoRL)
 print("PRECISAO SVM\n", precisaoSVM)
+print("PRECISAO RL\n", precisaoRL)
 
 
 print("----------------MEDIAS  --------------------------------------")
